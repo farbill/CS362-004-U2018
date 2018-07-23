@@ -1,4 +1,10 @@
 //
+// Created by William Fargo on 22/7/2018.
+//
+//
+// Created by William Fargo on 22/7/2018.
+//
+//
 // Created by William Fargo on 21/7/2018. TEST FOR SMITHY CARD
 //
 
@@ -10,8 +16,6 @@
 #include "rngs.h"
 #include <stdlib.h>
 
-#define TESTCARD "outpost"
-
 int main() {
     int newCards = 0;
     int discarded = 1;
@@ -21,25 +25,24 @@ int main() {
     int handpos = 0, choice1 = 0, choice2 = 0, choice3 = 0, bonus = 0;
     int remove1, remove2;
     int seed = 1000;
-    int numPlayers = 2
+    int numPlayers = 2;
     struct gameState G, testG;
+    int *testK = kingdomCards(adventurer, embargo, outpost, minion, mine, cutpurse,
+                         sea_hag, tribute, outpost, council_room);
     int k[10] = {adventurer, embargo, outpost, minion, mine, cutpurse,
                  sea_hag, tribute, outpost, council_room};
-    int testK[10];
     // initialize a game state and player cards
-    initializeGame(numPlayers, k, seed, &G);
-    newCards = 3;
-    xtraCoins = 0;
-    printf("----------------- Testing WhoseTurn----------------\n", TESTCARD);
+
+    printf("----------------- Testing WhoseTurn----------------\n");
     // copy the game state to a test case
-    memcpy(&testG, &G, sizeof(struct gameState));
-    printf("Testing that internal state of whose turns is properly returned\n");
-    asserttrue(G.whoseTurn == whoseTurn(&G));
-    printf("\n >>>>>Testing complete %s <<<<<\n\n", TESTCARD);
+    printf("Testing that numHandCards returns properly\n");
+    for(int z = 0; z < 10; z++){
+        printf("Testing kingdom card number %d is correct\n", z);
+        asserttrue(k[z] == testK[z]);
+    }
+    printf("\n >>>>>Testing complete <<<<<\n\n");
 
 
 
     return 0;
 }
-
-

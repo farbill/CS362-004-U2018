@@ -1,4 +1,7 @@
 //
+// Created by William Fargo on 22/7/2018.
+//
+//
 // Created by William Fargo on 21/7/2018. TEST FOR SMITHY CARD
 //
 
@@ -10,8 +13,6 @@
 #include "rngs.h"
 #include <stdlib.h>
 
-#define TESTCARD "outpost"
-
 int main() {
     int newCards = 0;
     int discarded = 1;
@@ -21,7 +22,7 @@ int main() {
     int handpos = 0, choice1 = 0, choice2 = 0, choice3 = 0, bonus = 0;
     int remove1, remove2;
     int seed = 1000;
-    int numPlayers = 2
+    int numPlayers = 2;
     struct gameState G, testG;
     int k[10] = {adventurer, embargo, outpost, minion, mine, cutpurse,
                  sea_hag, tribute, outpost, council_room};
@@ -33,13 +34,11 @@ int main() {
     printf("----------------- Testing WhoseTurn----------------\n", TESTCARD);
     // copy the game state to a test case
     memcpy(&testG, &G, sizeof(struct gameState));
-    printf("Testing that internal state of whose turns is properly returned\n");
-    asserttrue(G.whoseTurn == whoseTurn(&G));
+    printf("Testing that numHandCards returns properly\n");
+    asserttrue(G.handCount[ whoseTurn(&G) ] == numHandCards(&G));
     printf("\n >>>>>Testing complete %s <<<<<\n\n", TESTCARD);
 
 
 
     return 0;
 }
-
-

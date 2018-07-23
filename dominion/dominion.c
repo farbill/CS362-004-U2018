@@ -13,6 +13,121 @@ int compare(const void* a, const void* b) {
   return 0;
 }
 
+void asserttrue(int value){
+    if(value){
+        printf("Test Case Passed\n");
+    }
+    else{
+        printf("Test Case Failed\n");
+    }
+}
+int compareIntegerArray(int *array1, int *array2, int length) {
+    for(int i = 0; i < length; i ++){
+        if(array1[i] != array2[i]){
+            return 0;
+        }
+    }
+    return 1;
+}
+int compareIntegerArrayBesidesPositionX(int *array1, int *array2, int length, int positionX) {
+    for(int i = 0; i < length; i ++){
+        if(i == positionX){
+            continue;
+        }
+        if(array1[i] != array2[i]){
+            printf("Failed at position %d value array1 %d value array2 %d\n", i, array1[i], array2[i]);
+            return 0;
+        }
+    }
+    return 1;
+}
+
+
+
+int haveOtherPlayersStatesChanged(int player, struct gameState gsOne, struct gameState gsTwo, int numPlayers){
+    printf("Testing that the game state is the same except for player number %d\n", player);
+    printf("Test number players is the same\n");
+    asserttrue(gsOne.numPlayers == gsTwo.numPlayers);
+    printf("Test output played is the same\n");
+    asserttrue(gsOne.outpostPlayed == gsTwo.outpostPlayed);
+    printf("Test output turn is the same\n");
+    asserttrue(gsOne.outpostTurn == gsTwo.outpostTurn);
+    printf("Test phase is the same\n");
+    asserttrue(gsOne.phase == gsTwo.phase);
+    printf("Test handcounts are the same\n");
+    asserttrue(compareIntegerArrayBesidesPositionX(gsOne.handCount, gsTwo.handCount, numPlayers - 1, player));
+    printf("Test deckcounts are the same\n");
+    asserttrue(compareIntegerArrayBesidesPositionX(gsOne.deckCount, gsTwo.deckCount, numPlayers - 1, player));
+    printf("Test discardCounts are the same\n");
+    asserttrue(compareIntegerArrayBesidesPositionX(gsOne.discardCount, gsTwo.discardCount, numPlayers - 1, player));
+    /*
+    printf("Test hands are the same\n");
+    asserttrue(compareNestedIntegerArrayBesidesArrayAtPositionX(gsOne.hand, gsTwo.hand, gsOne.handCount, gsTwo.handCount, numPlayers - 1, player));
+    printf("Test decks are the same\n");
+    asserttrue(compareNestedIntegerArrayBesidesArrayAtPositionX(gsOne.deck, gsTwo.deck, gsOne.deckCount, gsTwo.deckCount, numPlayers - 1, player));
+    printf("Test discards are the same\n");
+    asserttrue(compareNestedIntegerArrayBesidesArrayAtPositionX(gsOne.discard, gsTwo.discard, gsOne.discardCount, gsTwo.discardCount, numPlayers - 1, player));
+     */
+    printf("Testing that hands are the same\n");
+    for(int i = 0; i <  numPlayers - 1; i ++){
+        if(i == player){
+            continue;
+        }
+        if(gsOne.handCount[i] != gsTwo.handCount[i]){
+            printf("Failed at position %d value array1 %d value array2 %d\n",
+                   i,
+                   gsOne.handCount[i] ,
+                   gsTwo.handCount[i]);
+        }
+        for(int c = 0; c < gsOne.handCount[i]; c++){
+            if(gsOne.hand[i][c] != gsTwo.hand[i][c]){
+                printf("Failed at nested array position i %d c %d\n", i, c);
+
+            }
+        }
+    }
+    printf("Test Passed\n");
+    printf("Testing that decks are the same\n");
+    for(int i = 0; i <  numPlayers - 1; i ++){
+        if(i == player){
+            continue;
+        }
+        if(gsOne.deckCount[i] != gsTwo.deckCount[i]){
+            printf("Failed at position %d value array1 %d value array2 %d\n",
+                   i,
+                   gsOne.deckCount[i] ,
+                   gsTwo.deckCount[i]);
+        }
+        for(int c = 0; c < gsOne.handCount[i]; c++){
+            if(gsOne.deck[i][c] != gsTwo.deck[i][c]){
+                printf("Failed at nested array position i %d c %d\n", i, c);
+
+            }
+        }
+    }
+    printf("Test Passed\n");
+    printf("Testing that discards are the same\n");
+    for(int i = 0; i <  numPlayers - 1; i ++){
+        if(i == player){
+            continue;
+        }
+        if(gsOne.discardCount[i] != gsTwo.discardCount[i]){
+            printf("Failed at position %d value array1 %d value array2 %d\n",
+                   i,
+                   gsOne.discardCount[i] ,
+                   gsTwo.discardCount[i]);
+        }
+        for(int c = 0; c < gsOne.discardCount[i]; c++){
+            if(gsOne.discard[i][c] != gsTwo.discard[i][c]){
+                printf("Failed at nested array position i %d c %d\n", i, c);
+
+            }
+        }
+    }
+    printf("Test Passed\n");
+    return 0;
+}
+
 struct gameState* newGame() {
   struct gameState* g = malloc(sizeof(struct gameState));
   return g;
@@ -663,6 +778,7 @@ void adventurerEffect(struct gameState *state, int currentPlayer ){
     }
   }
   while(z-1>=0){
+      printf("We are in the z loop\n");
     state->discard[currentPlayer][state->discardCount[currentPlayer]++]=temphand[z-1]; // discard all cards in play that have been drawn
     z=z-1;
   }

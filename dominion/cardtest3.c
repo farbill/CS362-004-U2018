@@ -10,7 +10,7 @@
 #include "rngs.h"
 #include <stdlib.h>
 
-#define TESTCARD "outpost"
+#define TESTCARD "great_hall"
 
 int main() {
     int newCards = 0;
@@ -25,8 +25,8 @@ int main() {
     int numPlayers = 2;
     int thisPlayer = 0;
     struct gameState G, testG;
-    int k[10] = {adventurer, embargo, outpost, minion, mine, cutpurse,
-                 sea_hag, tribute, outpost, council_room};
+    int k[10] = {adventurer, embargo, great_hall, minion, mine, cutpurse,
+                 sea_hag, tribute, great_hall, council_room};
     int testK[10];
     // initialize a game state and player cards
     initializeGame(numPlayers, k, seed, &G);
@@ -34,23 +34,21 @@ int main() {
     xtraCoins = 0;
     printf("----------------- Testing Card: %s ----------------\n", TESTCARD);
     // copy the game state to a test case
-    drawCard(thisPlayer, &testG);
-    drawCard(thisPlayer, &testG);
-    drawCard(thisPlayer, &testG);
     memcpy(&testG, &G, sizeof(struct gameState));
-
-
-    cardEffect(outpost, choice1, choice2, choice3, &testG, handpos, &bonus);
-    printf("TEST: outpost played increments\n");
-    asserttrue(testG.outpostPlayed == G.outpostPlayed + 1);
+    cardEffect(great_hall, choice1, choice2, choice3, &testG, handpos, &bonus);
+    printf("TEST: great_hall adds +1 action\n");
+    asserttrue(testG.numActions == G.numActions + 1);
 //printf("after card effect handcount test = %d, G = %d", testG.handCount[thisPlayer], G.handCount[thisPlayer]);
-    printf("TEST: outpost discards\n");
-    asserttrue(testG.handCount[thisPlayer] == G.handCount[thisPlayer] - 1);
+    printf("TEST: great_hall is handcount neutral\n");
+    printf("test handcount %d, handCount %d",testG.handCount[thisPlayer], G.handCount[thisPlayer]);
+    asserttrue(testG.handCount[thisPlayer] == G.handCount[thisPlayer]);
+    printf("deck count = %d, expected = %d\n", testG.deckCount[thisPlayer] == G.deckCount[thisPlayer] - 1);
+    asserttrue(testG.deckCount[thisPlayer] == G.deckCount[thisPlayer] - 1);
     printf("coins = %d, expected = %d\n", testG.coins, G.coins + xtraCoins);
     asserttrue(testG.coins == G.coins + xtraCoins);
-    printf("TEST: outpost keeps kindgom piles the same\n");
+    printf("TEST: great_hall keeps kindgom piles the same\n");
     asserttrue(compareIntegerArray(k, testK, 10));
-    printf("TEST: outpost keeps victory card counts the same\n");
+    printf("TEST: great_hall keeps victory card counts the same\n");
     printf("Estate:\n");
     asserttrue(testG.supplyCount[estate] == G.supplyCount[estate]);
     printf("Duchy:\n");
