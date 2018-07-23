@@ -13,6 +13,121 @@ int compare(const void* a, const void* b) {
   return 0;
 }
 
+void asserttrue(int value){
+    if(value){
+        printf("Test Case Passed\n");
+    }
+    else{
+        printf("Test Case Failed\n");
+    }
+}
+int compareIntegerArray(int *array1, int *array2, int length) {
+    for(int i = 0; i < length; i ++){
+        if(array1[i] != array2[i]){
+            return 0;
+        }
+    }
+    return 1;
+}
+int compareIntegerArrayBesidesPositionX(int *array1, int *array2, int length, int positionX) {
+    for(int i = 0; i < length; i ++){
+        if(i == positionX){
+            continue;
+        }
+        if(array1[i] != array2[i]){
+            printf("Failed at position %d value array1 %d value array2 %d\n", i, array1[i], array2[i]);
+            return 0;
+        }
+    }
+    return 1;
+}
+
+
+
+int haveOtherPlayersStatesChanged(int player, struct gameState gsOne, struct gameState gsTwo, int numPlayers){
+    printf("Testing that the game state is the same except for player number %d\n", player);
+    printf("Test number players is the same\n");
+    asserttrue(gsOne.numPlayers == gsTwo.numPlayers);
+    printf("Test output played is the same\n");
+    asserttrue(gsOne.outpostPlayed == gsTwo.outpostPlayed);
+    printf("Test output turn is the same\n");
+    asserttrue(gsOne.outpostTurn == gsTwo.outpostTurn);
+    printf("Test phase is the same\n");
+    asserttrue(gsOne.phase == gsTwo.phase);
+    printf("Test handcounts are the same\n");
+    asserttrue(compareIntegerArrayBesidesPositionX(gsOne.handCount, gsTwo.handCount, numPlayers - 1, player));
+    printf("Test deckcounts are the same\n");
+    asserttrue(compareIntegerArrayBesidesPositionX(gsOne.deckCount, gsTwo.deckCount, numPlayers - 1, player));
+    printf("Test discardCounts are the same\n");
+    asserttrue(compareIntegerArrayBesidesPositionX(gsOne.discardCount, gsTwo.discardCount, numPlayers - 1, player));
+    /*
+    printf("Test hands are the same\n");
+    asserttrue(compareNestedIntegerArrayBesidesArrayAtPositionX(gsOne.hand, gsTwo.hand, gsOne.handCount, gsTwo.handCount, numPlayers - 1, player));
+    printf("Test decks are the same\n");
+    asserttrue(compareNestedIntegerArrayBesidesArrayAtPositionX(gsOne.deck, gsTwo.deck, gsOne.deckCount, gsTwo.deckCount, numPlayers - 1, player));
+    printf("Test discards are the same\n");
+    asserttrue(compareNestedIntegerArrayBesidesArrayAtPositionX(gsOne.discard, gsTwo.discard, gsOne.discardCount, gsTwo.discardCount, numPlayers - 1, player));
+     */
+    printf("Testing that hands are the same\n");
+    for(int i = 0; i <  numPlayers - 1; i ++){
+        if(i == player){
+            continue;
+        }
+        if(gsOne.handCount[i] != gsTwo.handCount[i]){
+            printf("Failed at position %d value array1 %d value array2 %d\n",
+                   i,
+                   gsOne.handCount[i] ,
+                   gsTwo.handCount[i]);
+        }
+        for(int c = 0; c < gsOne.handCount[i]; c++){
+            if(gsOne.hand[i][c] != gsTwo.hand[i][c]){
+                printf("Failed at nested array position i %d c %d\n", i, c);
+
+            }
+        }
+    }
+    printf("Test Passed\n");
+    printf("Testing that decks are the same\n");
+    for(int i = 0; i <  numPlayers - 1; i ++){
+        if(i == player){
+            continue;
+        }
+        if(gsOne.deckCount[i] != gsTwo.deckCount[i]){
+            printf("Failed at position %d value array1 %d value array2 %d\n",
+                   i,
+                   gsOne.deckCount[i] ,
+                   gsTwo.deckCount[i]);
+        }
+        for(int c = 0; c < gsOne.handCount[i]; c++){
+            if(gsOne.deck[i][c] != gsTwo.deck[i][c]){
+                printf("Failed at nested array position i %d c %d\n", i, c);
+
+            }
+        }
+    }
+    printf("Test Passed\n");
+    printf("Testing that discards are the same\n");
+    for(int i = 0; i <  numPlayers - 1; i ++){
+        if(i == player){
+            continue;
+        }
+        if(gsOne.discardCount[i] != gsTwo.discardCount[i]){
+            printf("Failed at position %d value array1 %d value array2 %d\n",
+                   i,
+                   gsOne.discardCount[i] ,
+                   gsTwo.discardCount[i]);
+        }
+        for(int c = 0; c < gsOne.discardCount[i]; c++){
+            if(gsOne.discard[i][c] != gsTwo.discard[i][c]){
+                printf("Failed at nested array position i %d c %d\n", i, c);
+
+            }
+        }
+    }
+    printf("Test Passed\n");
+    return 0;
+}
+
 struct gameState* newGame() {
   struct gameState* g = malloc(sizeof(struct gameState));
   return g;
@@ -643,6 +758,79 @@ int getCost(int cardNumber)
   return -1;
 }
 
+void adventurerEffect(struct gameState *state, int currentPlayer ){
+  int z = 0;
+  int temphand[MAX_HAND];// moved above the if statement
+  int drawntreasure=0;
+  int cardDrawn;
+  while(drawntreasure<2){
+    if (state->deckCount[currentPlayer] <5){//if the deck is empty we need to shuffle discard and add to deck
+      shuffle(currentPlayer, state);
+    }
+    drawCard(currentPlayer, state);
+    cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]-1];//top card of hand is most recently drawn card.
+    if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold)
+      drawntreasure++;
+    else{
+      temphand[z]=cardDrawn;
+      state->handCount[currentPlayer]--; //this should just remove the top card (the most recently drawn one).
+      z++;
+    }
+  }
+  while(z-1>=0){
+      printf("We are in the z loop\n");
+    state->discard[currentPlayer][state->discardCount[currentPlayer]++]=temphand[z-1]; // discard all cards in play that have been drawn
+    z=z-1;
+  }
+}
+void smithyEffect(struct gameState *state, int currentPlayer, int handPos ) {
+  int i;
+  for (i = 0; i < 4; i++) {
+    drawCard(currentPlayer, state);
+  }
+  //discard card from hand
+  discardCard(handPos, currentPlayer, state, 0);
+}
+void villageEffect(struct gameState *state, int currentPlayer, int handPos ) {
+  //+1 Card
+  drawCard(currentPlayer, state);
+  //+2 Actions
+  state->numActions = state->numActions + 2;
+  //discard played card from hand
+}
+void councilRoomEffect(struct gameState *state, int currentPlayer, int handPos ) {
+  //+4 Cards
+  int i;
+  for (i = 0; i < 4; i++)
+  {
+    drawCard(currentPlayer, state);
+  }
+
+  //+1 Buy
+  state->numBuys++;
+
+  //Each other player draws a card
+  for (i = 0; i < state->numPlayers; i++)
+  {
+    if ( i != currentPlayer )
+    {
+      drawCard(i, state);
+    }
+  }
+
+  //put played card in played card pile
+  discardCard(handPos, currentPlayer, state, 0);
+}
+void greatHallEffect(struct gameState *state, int currentPlayer, int handPos ) {
+    //+1 Card
+
+    //+1 Actions
+    state->numActions++;
+
+    //discard card from hand
+    //discardCard(handPos, currentPlayer, state, 0);
+}
+
 int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus)
 {
   int i;
@@ -655,9 +843,6 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 
   int tributeRevealedCards[2] = {-1, -1};
   int temphand[MAX_HAND];// moved above the if statement
-  int drawntreasure=0;
-  int cardDrawn;
-  int z = 0;// this is the counter for the temp hand
   if (nextPlayer > (state->numPlayers - 1)){
     nextPlayer = 0;
   }
@@ -667,48 +852,12 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
   switch( card ) 
     {
     case adventurer:
-      while(drawntreasure<2){
-	if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
-	  shuffle(currentPlayer, state);
-	}
-	drawCard(currentPlayer, state);
-	cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]-1];//top card of hand is most recently drawn card.
-	if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold)
-	  drawntreasure++;
-	else{
-	  temphand[z]=cardDrawn;
-	  state->handCount[currentPlayer]--; //this should just remove the top card (the most recently drawn one).
-	  z++;
-	}
-      }
-      while(z-1>=0){
-	state->discard[currentPlayer][state->discardCount[currentPlayer]++]=temphand[z-1]; // discard all cards in play that have been drawn
-	z=z-1;
-      }
+      adventurerEffect(state, currentPlayer);
       return 0;
 			
     case council_room:
       //+4 Cards
-      for (i = 0; i < 4; i++)
-	{
-	  drawCard(currentPlayer, state);
-	}
-			
-      //+1 Buy
-      state->numBuys++;
-			
-      //Each other player draws a card
-      for (i = 0; i < state->numPlayers; i++)
-	{
-	  if ( i != currentPlayer )
-	    {
-	      drawCard(i, state);
-	    }
-	}
-			
-      //put played card in played card pile
-      discardCard(handPos, currentPlayer, state, 0);
-			
+      councilRoomEffect(state, currentPlayer, handPos);
       return 0;
 			
     case feast:
@@ -830,24 +979,11 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 		
     case smithy:
       //+3 Cards
-      for (i = 0; i < 3; i++)
-	{
-	  drawCard(currentPlayer, state);
-	}
-			
-      //discard card from hand
-      discardCard(handPos, currentPlayer, state, 0);
+      smithyEffect(state, currentPlayer, handPos);
       return 0;
 		
     case village:
-      //+1 Card
-      drawCard(currentPlayer, state);
-			
-      //+2 Actions
-      state->numActions = state->numActions + 2;
-			
-      //discard played card from hand
-      discardCard(handPos, currentPlayer, state, 0);
+      villageEffect(state, currentPlayer, handPos);
       return 0;
 		
     case baron:
@@ -902,14 +1038,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return 0;
 		
     case great_hall:
-      //+1 Card
-      drawCard(currentPlayer, state);
-			
-      //+1 Actions
-      state->numActions++;
-			
-      //discard card from hand
-      discardCard(handPos, currentPlayer, state, 0);
+      greatHallEffect(state, currentPlayer, handPos);
       return 0;
 		
     case minion:
@@ -1159,8 +1288,6 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       //set outpost flag
       state->outpostPlayed++;
 			
-      //discard card
-      discardCard(handPos, currentPlayer, state, 0);
       return 0;
 		
     case salvager:
