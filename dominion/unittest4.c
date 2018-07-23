@@ -17,16 +17,8 @@
 #include <stdlib.h>
 
 int main() {
-    int newCards = 0;
-    int discarded = 1;
-    int xtraCoins = 0;
-    int shuffledCards = 0;
 
-    int handpos = 0, choice1 = 0, choice2 = 0, choice3 = 0, bonus = 0;
-    int remove1, remove2;
-    int seed = 1000;
-    int numPlayers = 2;
-    struct gameState G, testG;
+
     int *testK = kingdomCards(adventurer, embargo, outpost, minion, mine, cutpurse,
                          sea_hag, tribute, outpost, council_room);
     int k[10] = {adventurer, embargo, outpost, minion, mine, cutpurse,

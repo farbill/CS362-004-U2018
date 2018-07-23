@@ -828,7 +828,7 @@ void greatHallEffect(struct gameState *state, int currentPlayer, int handPos ) {
     state->numActions++;
 
     //discard card from hand
-    discardCard(handPos, currentPlayer, state, 0);
+    //discardCard(handPos, currentPlayer, state, 0);
 }
 
 int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus)
@@ -1288,8 +1288,6 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       //set outpost flag
       state->outpostPlayed++;
 			
-      //discard card
-      discardCard(handPos, currentPlayer, state, 0);
       return 0;
 		
     case salvager:

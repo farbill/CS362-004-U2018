@@ -14,9 +14,9 @@
 
 int main() {
     int newCards = 0;
-    int discarded = 1;
+
     int xtraCoins = 0;
-    int shuffledCards = 0;
+
 
     int i, j, m;
     int handpos = 0, choice1 = 0, choice2 = 0, choice3 = 0, bonus = 0;
@@ -45,7 +45,7 @@ int main() {
     asserttrue(testG.outpostPlayed == G.outpostPlayed + 1);
 //printf("after card effect handcount test = %d, G = %d", testG.handCount[thisPlayer], G.handCount[thisPlayer]);
     printf("TEST: outpost discards\n");
-    asserttrue(testG.handCount[thisPlayer] == G.handCount[thisPlayer] - 1);
+    asserttrue(testG.handCount[thisPlayer] == G.handCount[thisPlayer]);
     printf("coins = %d, expected = %d\n", testG.coins, G.coins + xtraCoins);
     asserttrue(testG.coins == G.coins + xtraCoins);
     printf("TEST: outpost keeps kindgom piles the same\n");

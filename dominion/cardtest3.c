@@ -40,9 +40,9 @@ int main() {
     asserttrue(testG.numActions == G.numActions + 1);
 //printf("after card effect handcount test = %d, G = %d", testG.handCount[thisPlayer], G.handCount[thisPlayer]);
     printf("TEST: great_hall is handcount neutral\n");
-    printf("test handcount %d, handCount %d",testG.handCount[thisPlayer], G.handCount[thisPlayer]);
+
     asserttrue(testG.handCount[thisPlayer] == G.handCount[thisPlayer]);
-    printf("deck count = %d, expected = %d\n", testG.deckCount[thisPlayer] == G.deckCount[thisPlayer] - 1);
+    printf("Test Great call has the correct deck count\n");
     asserttrue(testG.deckCount[thisPlayer] == G.deckCount[thisPlayer] - 1);
     printf("coins = %d, expected = %d\n", testG.coins, G.coins + xtraCoins);
     asserttrue(testG.coins == G.coins + xtraCoins);
