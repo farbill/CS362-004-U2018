@@ -9,18 +9,20 @@
 #include <assert.h>
 #include "rngs.h"
 #include <stdlib.h>
+#include <time.h>
 
 #define TESTCARD "smithy"
 
 int main() {
+    srand(time(NULL));
     int newCards = 0;
     int discarded = 1;
     int xtraCoins = 0;
     int shuffledCards = 0;
 
-    int i, j, m;
+
+
     int handpos = 0, choice1 = 0, choice2 = 0, choice3 = 0, bonus = 0;
-    int remove1, remove2;
     int seed = 1000;
     int numPlayers = 2;
     int thisPlayer = 0;
@@ -40,7 +42,8 @@ int main() {
         int testK[10];
         // initialize a game state and player cards
         //generate a random game state through playing the game, where an adventurer card can be played
-        oracle(&G, seed, adventurer);
+        handpos = oracle(&G, seed, smithy);
+        printf("----------------- Testing Card: %s ----------------\n", TESTCARD);
         printf("TEST: smithy adds +3 cards\n");
 
         // copy the game state to a test case
@@ -76,5 +79,3 @@ int main() {
 
     return 0;
 }
-
-
