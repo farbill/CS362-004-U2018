@@ -32,7 +32,7 @@ int main() {
     int thisPlayer = 0;
     clock_t t;
     t = clock();
-    for(int i = 0; i < 10; i++) {
+    for(int i = 0; i < 25; i++) {
         if (((clock() - t)/CLOCKS_PER_SEC) > (5.0*60.0*((double)t)/CLOCKS_PER_SEC)){
             printf("Hitting 5 minutes\n");
             break;
